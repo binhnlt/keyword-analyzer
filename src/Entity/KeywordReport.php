@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Carbon\Carbon;
-use App\Entity\Keyword;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +43,11 @@ class KeywordReport
      * @ORM\Column(type="float")
      */
     private $search_time = 0.0;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $source;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -104,6 +108,18 @@ class KeywordReport
     public function setSearchTime(float $search_time): self
     {
         $this->search_time = $search_time;
+
+        return $this;
+    }
+
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
+    public function setSource(string $source): self
+    {
+        $this->source = $source;
 
         return $this;
     }
