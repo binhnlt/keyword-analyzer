@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {% block metatags %}{% endblock %}
+
+        <title>{% block title %}Keyword Analyzer{% endblock %}</title>
+        {% block stylesheets %}
+        <link href="{{ asset('/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('/assets/css/modern-business.css') }}" rel="stylesheet">
+        <link href="{{ asset('/assets/css/custom.css') }}" rel="stylesheet">
+        {% endblock %}
+    </head>
+    <body >
+        {% block top_navbar %}
+        {% include "_partials/_shared/top_navbar.html.twig" %}
+        {% endblock %}
+
+        <div class="container page-container">
+        {% block body %}{% endblock %}
+        </div>
+
+        {% block bottom_navbar %}
+        {% include "_partials/_shared/bottom_navbar.html.twig" %}
+        {% endblock %}
+        
+        {% block javascripts %}
+        <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

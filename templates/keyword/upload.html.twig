@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Keyword Uploader{% endblock %}
+
+{% block body %}
+<h1 class="mt-4 mb-3">Keywords Input</h1>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <h3></h3>
+        <form name="sentMessage" id="contactForm" novalidate>
+            <div class="control-group form-group">
+                <div class="controls">
+                    <input type="file" class="form-control" id="file-uploader" required
+                        data-validation-required-message="Please enter csv file.">
+                    <p class="help-block"></p>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="sendMessageButton">Submit</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
