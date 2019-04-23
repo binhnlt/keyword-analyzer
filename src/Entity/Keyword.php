@@ -25,9 +25,9 @@ class Keyword
     private $keyword;
 
     /**
-     * @ORM\OneToMany(targetEntity="KeywordReport", mappedBy="keyword", fetch="EXTRA_LAZY", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="KeywordReport", mappedBy="keyword", orphanRemoval=true, cascade={"persist"})
      */
-    public $reports;
+    private $reports;
 
     /**
      * @ORM\Column(type="datetime")
@@ -85,5 +85,34 @@ class Keyword
         $this->updated_at = $updated_at;
 
         return $this;
+    }
+
+    public function getReports()
+    {
+        return $this->reports;
+    }
+
+    public function addReport(KeywordReport $report)
+    {
+        return $this->reports->add($report);
+    }
+
+    public function getLatestReport()
+    {
+        return $this->reports->last();
+    }
+
+    /**
+     * Get as array
+     *
+     * @return void
+     */
+    public function toData()
+    {
+        return [
+            'id' => $this->getId(),
+            'keyword' => $this->getKeyword(),
+            'imported_at' => $this->getImportedAt()->format('Y-m-d H:i:s'),
+        ];
     }
 }

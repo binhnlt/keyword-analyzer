@@ -19,7 +19,13 @@ class KeywordRepository extends ServiceEntityRepository
         parent::__construct($registry, Keyword::class);
     }
 
-    public function findOneOrCreate($keyword): Keyword
+    /**
+     * Find keyword by word
+     *
+     * @param string $keyword
+     * @return Keyword
+     */
+    public function findOneOrCreate(string $keyword): Keyword
     {
         $entity = $this->findOneBy(['keyword' => $keyword]);
 

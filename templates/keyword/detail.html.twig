@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Keyword Report{% endblock %}
+
+{% block body %}
+<h1 class="mt-4 mb-3">All reports for <strong class="text-primary">{{ keyword }}</strong></h1>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Generated At</th>
+                <th scope="col">Adwords</th>
+                <th scope="col">Links on page</th>
+                <th scope="col">Total result</th>
+                <th scope="col">Exec time</th>
+                <th scope="col">Source</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.created_at }} UTC</td>
+                <td>{{ report.adwords_number }}</td>
+                <td>{{ report.links_number|number_format }}</td>
+                <td>{{ report.result_number|number_format }}</td>
+                <td>{{ report.search_time }} seconds</td>
+                <td>{{ report.source }}</td>
+                <td>
+                    <a class="btn btn-primary" target="_blank" href="{{ url('keyword_report_cached_page', {'keywordId': id, 'reportId': report.id }) }}">View cached page <i class="fa fa-external-link-alt"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

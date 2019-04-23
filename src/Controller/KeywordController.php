@@ -2,13 +2,26 @@
 
 namespace App\Controller;
 
+use App\Entity\Keyword;
 use App\Form\KeywordUploaderType;
+use App\Service\KeywordAnalyzerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class KeywordController extends AbstractController
 {
+
+    /**
+     * @var KeywordAnalyzerService
+     */
+    private $keywordAnalyzerService;
+
+    public function __construct(KeywordAnalyzerService $keywordAnalyzerService)
+    {
+        $this->keywordAnalyzerService = $keywordAnalyzerService;
+    }
+
     /**
      * Display report base on keywords
      * 
@@ -16,9 +29,35 @@ class KeywordController extends AbstractController
      */
     public function indexAction()
     {
-        return $this->render('keyword/index.html.twig', [
-            'controller_name' => 'KeywordController',
-        ]);
+        $data = $this->keywordAnalyzerService->getOverviewReport();
+        return $this->render('keyword/index.html.twig', $data);
+    }
+
+    /**
+     * Display all reports by keyword ID
+     * 
+     * @Route("/keyword/report/{keywordId}", name="keyword_report_detail")
+     */
+    public function detailAction(int $keywordId)
+    {
+        $data = $this->keywordAnalyzerService->getDetailByKeywordId($keywordId);
+
+        if (!$data) {
+            throw $this->createNotFoundException('The Keyword ID does not exist');
+        }
+
+        return $this->render('keyword/detail.html.twig', $data);
+    }
+
+    /**
+     * Display all reports by keyword ID
+     * 
+     * @Route("/keyword/report/{keywordId}/cached/{reportId}", name="keyword_report_cached_page")
+     */
+    public function showCachedPageAction(int $keywordId, int $reportId)
+    {
+        $data = $this->keywordAnalyzerService->getCachedPageByReportId($reportId);
+        return $this->render('keyword/cached_page.html.twig', $data);
     }
 
     /**
@@ -46,7 +85,7 @@ class KeywordController extends AbstractController
 
         $fileExtension = $file->getClientOriginalExtension();
 
-        if(!in_array($fileExtension, ['csv'])) {
+        if (!in_array($fileExtension, ['csv'])) {
             $this->addFlash('error', 'Invalid file type');
             return $this->redirectToRoute('keyword_upload');
         }
@@ -57,5 +96,5 @@ class KeywordController extends AbstractController
         $file->move($this->getParameter('keyword_files_directory'), $fileName);
         $this->addFlash('success', 'Great!!! Your file is being processed, please wait...');
         return $this->redirectToRoute('keyword_upload');
-    }   
+    }
 }

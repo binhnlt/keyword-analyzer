@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cached page of {{ keyword.keyword }}{% endblock %}
+
+{% block body %}
+{{ page_content|raw }}
+{% endblock %}

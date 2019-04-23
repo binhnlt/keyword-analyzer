@@ -18,11 +18,15 @@ class KeywordReport
     private $id;
 
     /**
-     * @ORM\Column(type="bigint", options={"unsigned"=true})
      * @ORM\ManyToOne(targetEntity="Keyword", inversedBy="reports")
-     * @ORM\JoinColumn(name="keyword", referencedColumnName="id")
+     * @ORM\JoinColumn(name="keyword_id", referencedColumnName="id")
      */
     public $keyword;
+
+    /**
+     * @ORM\Column(type="bigint", options={"unsigned"=true})
+     */
+    private $keyword_id;
 
     /**
      * @ORM\Column(type="bigint")
@@ -69,6 +73,19 @@ class KeywordReport
         return $this->id;
     }
 
+
+    public function getKeywordId(): ?int
+    {
+        return $this->keyword_id;
+    }
+
+    public function setKeywordId(int $keyword_id): self
+    {
+        $this->keyword_id = $keyword_id;
+
+        return $this;
+    }
+
     public function getAdwordsNumber(): ?int
     {
         return $this->adwords_number;
@@ -93,12 +110,12 @@ class KeywordReport
         return $this;
     }
 
-    public function getResultNum(): ?int
+    public function getResultNumber(): ?int
     {
         return $this->result_num;
     }
 
-    public function setResultNum(int $result_num): self
+    public function setResultNumber(int $result_num): self
     {
         $this->result_num = $result_num;
 
@@ -143,7 +160,7 @@ class KeywordReport
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at = new Carbon();
+        return $this->created_at;
     }
 
     public function setCreatedAt(\DateTimeInterface $created_at): self
@@ -151,5 +168,18 @@ class KeywordReport
         $this->created_at = $created_at;
 
         return $this;
+    }
+
+    public function toData()
+    {
+        return [
+            'id'             => $this->getId(),
+            'created_at'     => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'adwords_number' => $this->getAdwordsNumber(),
+            'links_number'   => $this->getLinksNumber(),
+            'result_number'  => $this->getResultNumber(),
+            'search_time'    => $this->getSearchTime(),
+            'source'         => $this->getSource(),
+        ];
     }
 }

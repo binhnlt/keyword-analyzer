@@ -53,16 +53,22 @@ class ProcessKeywordFilesCommand extends ContainerAwareCommand
         rename($currentFilePath, $newFilePath);
 
         $file = fopen($newFilePath, 'r');
-        while (($line = fgetcsv($file)) !== FALSE) { 
+        while (($line = fgetcsv($file)) !== FALSE) {
             $keyword = reset($line); // Get keyword on first column of line
-            $keywordEntity = $this->getAnalyzerService()->analyzeKeyword($keyword);
+
+            // Skip empty line / keyword
+            if (empty($keyword)) continue;
+
+            $this->getAnalyzerService()->analyzeKeyword($keyword);
+
+            sleep(random_int(1, 10)); // Random time to prevent too many request
         }
 
         // Rename file after consumed
         $currentFilePath = $this->getContainer()->getParameter('keyword_files_directory') . '/' . $fileName . '.analyzing';
         $newFilePath = $this->getContainer()->getParameter('keyword_files_directory') . '/' . $fileName . '.analyzed';
         rename($currentFilePath, $newFilePath);
-        
+
         return true;
     }
 

@@ -18,4 +18,9 @@ class KeywordReportRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, KeywordReport::class);
     }
+
+    public function findAllByKeywordId($keywordId)
+    {
+        return $this->findBy(['keyword_id' => $keywordId], ['created_at' => 'desc']);
+    }
 }

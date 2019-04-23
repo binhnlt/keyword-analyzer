@@ -3,5 +3,33 @@
 {% block title %}Keyword Report{% endblock %}
 
 {% block body %}
-Hello 
+<h1 class="mt-4 mb-3">Keywords</h1>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Keyword</th>
+            <th scope="col">Latest Report Stats</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for keyword in keywords %}
+            <tr>
+                <td><a target="_blank" href="{{ url('keyword_report_detail', {'keywordId': keyword.id}) }}">{{ keyword.keyword }} <i class="fa fa-external-link-alt"></i></a></td>
+                <td>
+                    <ul>
+                        <li>Generated at {{ keyword.last_report.created_at }} UTC</li>    
+                        <li>Adwords: {{ keyword.last_report.adwords_number }}</li>    
+                        <li>Links on page: {{ keyword.last_report.links_number|number_format }}</li>    
+                        <li>Total result: {{ keyword.last_report.result_number|number_format }}</li>    
+                        <li>Exec time: {{ keyword.last_report.search_time }} seconds</li>    
+                        <li>Source: {{ keyword.last_report.source }}</li>    
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

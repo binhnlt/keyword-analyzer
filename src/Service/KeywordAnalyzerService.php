@@ -9,14 +9,86 @@ use App\Entity\KeywordReport;
 class KeywordAnalyzerService
 {
 
+    /**
+     * @var EntitymanagementInterface
+     */
     private $_em = null;
 
+    /**
+     * @var GoogleSearchClientService
+     */
     private $searchClientService = null;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->_em = $entityManager;
     }
+
+    /**
+     * Get report overview for all keyword
+     *
+     * @return array
+     */
+    public function getOverviewReport()
+    {
+        $keywordData = [];
+        $keywords = $this->getKeywordRepository()->findBy([], ['keyword' => 'asc']);
+
+        foreach ($keywords as $keywordEntity) {
+            $data = $keywordEntity->toData();
+            $data['last_report'] = $keywordEntity->getLatestReport()->toData();
+            $keywordData[] = $data;
+        }
+
+        return ['keywords' => $keywordData];
+    }
+
+    /**
+     * Get all reports for specificed keyword by ID
+     *
+     * @param integer $keywordId
+     * @return array|null
+     */
+    public function getDetailByKeywordId(int $keywordId)
+    {
+        $keywordEntity = $this->getKeywordRepository()->find($keywordId);
+
+        if (!$keywordEntity) {
+            return null;
+        }
+
+        $reports = $this->getKeywordReportRepository()->findAllByKeywordId($keywordId);
+        $data = $keywordEntity->toData();
+        $data['reports'] = [];
+
+        foreach ($reports as $reportEntity) {
+            $data['reports'][] = $reportEntity->toData();
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get all reports for specificed keyword by ID
+     *
+     * @param integer $keywordId
+     * @return 
+     */
+    public function getCachedPageByReportId(int $reportId)
+    {
+        $report = $this->getKeywordReportRepository()->find($reportId);
+
+        if (!$report) {
+            return null;
+        }
+
+        return [
+            'id'           => $report->getId(),
+            'keyword'      => $report->keyword->toData(),
+            'page_content' => $report->getPageContent(),
+        ];
+    }
+
 
     /**
      * Perform executing search and create report for keyword
@@ -27,7 +99,7 @@ class KeywordAnalyzerService
     public function analyzeKeyword(string $keyword): Keyword
     {
         $keywordEntity = $this->getKeywordRepository()->findOneOrCreate($keyword);
-        $keywordEntity->reports[] = $this->getKeywordReport($keywordEntity);
+        $keywordEntity->addReport($this->getKeywordReport($keywordEntity));
 
         $this->_em->persist($keywordEntity);
         $this->_em->flush();
@@ -44,7 +116,7 @@ class KeywordAnalyzerService
         $extractor->setHtmlContent($pageContent);
 
         $report = new KeywordReport();
-        $report->keyword = $keywordEntity->getId();
+        $report->keyword = $keywordEntity;
         $report->setSource($this->getSearchClientService()->getSearchName());
         $report->setAdwordsNumber($extractor->getAdsNumberOnPage());
         $report->setLinksNumber($extractor->getLinkNumberOnPage());
@@ -61,6 +133,14 @@ class KeywordAnalyzerService
     private function getKeywordRepository()
     {
         return $this->_em->getRepository(Keyword::class);
+    }
+
+    /**
+     * @return \App\Repository\KeywordReportRepository
+     */
+    private function getKeywordReportRepository()
+    {
+        return $this->_em->getRepository(KeywordReport::class);
     }
 
     /**
