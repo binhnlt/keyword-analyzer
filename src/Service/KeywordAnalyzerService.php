@@ -34,9 +34,15 @@ class KeywordAnalyzerService
         $keywordData = [];
         $keywords = $this->getKeywordRepository()->findBy([], ['keyword' => 'asc']);
 
+        if($keywords)
+
         foreach ($keywords as $keywordEntity) {
             $data = $keywordEntity->toData();
-            $data['last_report'] = $keywordEntity->getLatestReport()->toData();
+            
+            if ($keywordEntity->getLatestReport()) {
+                $data['last_report'] = $keywordEntity->getLatestReport()->toData();
+            }
+
             $keywordData[] = $data;
         }
 
@@ -121,7 +127,7 @@ class KeywordAnalyzerService
         $report->setAdwordsNumber($extractor->getAdsNumberOnPage());
         $report->setLinksNumber($extractor->getLinkNumberOnPage());
         $report->setSearchTime($extractor->getExecutionTimeFromStatsString($extractor->getResultStatsString()));
-        $report->setResultNum($extractor->getTotalResultNumberFromStatsString($extractor->getResultStatsString()));
+        $report->setResultNumber($extractor->getTotalResultNumberFromStatsString($extractor->getResultStatsString()));
         $report->setPageContent($pageContent);
 
         return $report;

@@ -16,8 +16,11 @@
         <tbody>
             {% for keyword in keywords %}
             <tr>
-                <td><a target="_blank" href="{{ url('keyword_report_detail', {'keywordId': keyword.id}) }}">{{ keyword.keyword }} <i class="fa fa-external-link-alt"></i></a></td>
                 <td>
+                <a target="_blank" href="{{ url('keyword_report_detail', {'keywordId': keyword.id}) }}">{{ keyword.keyword }} <i class="fa fa-external-link-alt"></i></a>
+                </td>
+                <td>
+                    {% if keyword.last_report is defined %}
                     <ul>
                         <li>Generated at {{ keyword.last_report.created_at }} UTC</li>    
                         <li>Adwords: {{ keyword.last_report.adwords_number }}</li>    
@@ -26,6 +29,9 @@
                         <li>Exec time: {{ keyword.last_report.search_time }} seconds</li>    
                         <li>Source: {{ keyword.last_report.source }}</li>    
                     </ul>
+                    {% else %}
+                    No report for this keyword yet!
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
