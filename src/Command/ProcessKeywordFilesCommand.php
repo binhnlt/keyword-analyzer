@@ -54,14 +54,15 @@ class ProcessKeywordFilesCommand extends ContainerAwareCommand
 
         $file = fopen($newFilePath, 'r');
         while (($line = fgetcsv($file)) !== FALSE) {
-            $keyword = reset($line); // Get keyword on first column of line
+            
+            foreach($line as $keyword) {
+                // Skip empty line / keyword
+                if (empty($keyword)) continue;
 
-            // Skip empty line / keyword
-            if (empty($keyword)) continue;
+                $this->getAnalyzerService()->analyzeKeyword($keyword);
 
-            $this->getAnalyzerService()->analyzeKeyword($keyword);
-
-            sleep(random_int(1, 10)); // Random time to prevent too many request
+                sleep(random_int(1, 10)); // Random time to prevent too many request
+            }
         }
 
         // Rename file after consumed
