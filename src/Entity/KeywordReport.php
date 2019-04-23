@@ -20,9 +20,9 @@ class KeywordReport
     /**
      * @ORM\Column(type="bigint", options={"unsigned"=true})
      * @ORM\ManyToOne(targetEntity="Keyword", inversedBy="reports")
-     * @ORM\JoinColumn(name="keyword_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="keyword", referencedColumnName="id")
      */
-    private $keyword;
+    public $keyword;
 
     /**
      * @ORM\Column(type="bigint")
@@ -58,6 +58,11 @@ class KeywordReport
      * @ORM\Column(type="datetime")
      */
     private $created_at;
+
+    public function __construct()
+    {
+        $this->created_at = Carbon::now();
+    }
 
     public function getId(): ?int
     {

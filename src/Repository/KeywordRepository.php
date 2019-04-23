@@ -19,32 +19,18 @@ class KeywordRepository extends ServiceEntityRepository
         parent::__construct($registry, Keyword::class);
     }
 
-    // /**
-    //  * @return Keyword[] Returns an array of Keyword objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findOneOrCreate($keyword): Keyword
     {
-        return $this->createQueryBuilder('k')
-            ->andWhere('k.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('k.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $entity = $this->findOneBy(['keyword' => $keyword]);
 
-    /*
-    public function findOneBySomeField($value): ?Keyword
-    {
-        return $this->createQueryBuilder('k')
-            ->andWhere('k.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if(!$entity)
+        {
+            $entity = new Keyword();
+            $entity->setKeyword($keyword);
+            $this->_em->persist($entity);
+            $this->_em->flush();
+        }
+
+        return $entity;
     }
-    */
 }

@@ -20,14 +20,14 @@ class Keyword
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"unique"=true})
      */
     private $keyword;
 
     /**
-     * @ORM\OneToMany(targetEntity="KeywordReport", mappedBy="keyword", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="KeywordReport", mappedBy="keyword", fetch="EXTRA_LAZY", orphanRemoval=true, cascade={"persist"})
      */
-    private $reports;
+    public $reports;
 
     /**
      * @ORM\Column(type="datetime")
@@ -42,6 +42,8 @@ class Keyword
     public function __construct()
     {
         $this->reports = new ArrayCollection();
+        $this->imported_at = Carbon::now();
+        $this->updated_at = Carbon::now();
     }
 
     public function getId(): ?int
@@ -63,7 +65,7 @@ class Keyword
 
     public function getImportedAt(): ?\DateTimeInterface
     {
-        return $this->imported_at = new Carbon();
+        return $this->imported_at;
     }
 
     public function setImportedAt(\DateTimeInterface $imported_at): self

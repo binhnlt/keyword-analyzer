@@ -4,6 +4,7 @@ namespace App\Service;
 
 use GuzzleHttp\Client;
 use Monolog\Logger;
+use App\Service\DomExtractor\BaseSearchExtractor;
 
 abstract class BaseSearchClientService
 {
@@ -33,6 +34,13 @@ abstract class BaseSearchClientService
      * @return string
      */
     protected abstract function getSearchRequestUrl(): string;
+
+    /**
+     * Get extractor service based on search client
+     *
+     * @return BaseSearchExtractor|null
+     */
+    protected abstract function getExtractorService(): ?BaseSearchExtractor;
 
     /**
      * @return string|null

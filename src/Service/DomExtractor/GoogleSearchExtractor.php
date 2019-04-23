@@ -34,4 +34,38 @@ class GoogleSearchExtractor extends BaseSearchExtractor
             throw $ex;
         }
     }
+
+    /**
+     * Extract number of total result from stats string from Google Search
+     *
+     * @param string $statsstring Google search stats string
+     * @return integer
+     */
+    public function getTotalResultNumberFromStatsString(string $statsstring): int
+    {
+        if (empty($statsstring)) return 0;
+
+        // Get string before '(' character
+        $segments = explode("(", $statsstring, 2);
+        $resultString = reset($segments);
+
+        return (int)filter_var($resultString, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    }
+
+    /**
+     * Extract number of search execution time from stats string from Google Search
+     *
+     * @param string $statsstring Google search stats string
+     * @return integer
+     */
+    public function getExecutionTimeFromStatsString(string $statsstring): float
+    {
+        if (empty($statsstring)) return 0;
+
+        // Get string after '(' character
+        $segments = explode("(", $statsstring, 2);
+        $resultString = end($segments);
+
+        return (float)filter_var($resultString, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    }
 }
